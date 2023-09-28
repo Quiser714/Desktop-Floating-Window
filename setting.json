@@ -1,0 +1,19 @@
+{
+  "default": {
+    "color": [
+      250,
+      235,
+      215
+    ],
+    "font": "\u6977\u4f53",
+    "fontsize": 15,
+    "fontcolor": [
+      0,
+      0,
+      0
+    ],
+    "width": 260,
+    "height": 121,
+    "opacity": 0.7
+  }
+}

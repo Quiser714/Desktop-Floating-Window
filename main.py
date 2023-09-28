@@ -32,7 +32,7 @@ class MyWidget(QWidget):
         self.action_setting = None
 
         self._menu = None
-        self._font = None
+        self._font: QFont = QFont()
         self._offsetY = None
         self._offsetX = None
         self.screen_width = QGuiApplication.primaryScreen().geometry().width()
@@ -61,7 +61,6 @@ class MyWidget(QWidget):
         print('Goodbye PySide2!')
 
     def initUI(self):
-        # self.setGeometry(100, 100, 260, 120)
         self.resize(260, 120)
         # 窗口移动到屏幕中央
         _q_rect = self.frameGeometry()
@@ -74,8 +73,8 @@ class MyWidget(QWidget):
         self.setCursor(Qt.PointingHandCursor)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool)
-        # self.setStyleSheet(
-        #     "QLabel{color: black; font-size:15px;font-family:楷体;};")
+        # # self.setStyleSheet(
+        # #     "QLabel{color: black; font-size:15px;font-family:楷体;};")
         self._font = QFont()
         self._font.setFamily('楷体')
         self._font.setPixelSize(15)
@@ -174,38 +173,45 @@ class MyWidget(QWidget):
             self.move(event.globalX() - self._offsetX, event.globalY() - self._offsetY)
 
     def paintEvent(self, event) -> None:
-        # print('paintEvent')
         painter = QPainter(self)
         painter.setOpacity(self.setting.get_opacity())
-        # print(painter.opacity())
         painter.setBrush(self.setting.get_color())  # 古董白的rgb值
         painter.setPen(QPen(QColor(0, 0, 0, 0)))
         painter.drawRect(self.rect())
         self.round_corners()
 
     def wheelEvent(self, event: PySide2.QtGui.QWheelEvent) -> None:
-        if QApplication.keyboardModifiers() == Qt.ControlModifier:
 
+        if QApplication.keyboardModifiers() == Qt.ControlModifier:
+            # Ctrl+滚轮，改变透明度
+            if event.delta() > 0:
+                self.setting.set_opacity(self.setting.get_opacity() + 0.05)
+            else:
+                self.setting.set_opacity(self.setting.get_opacity() - 0.05)
+        else:
+            # 直接滚轮滚动，改变大小
             if event.delta() > 0:
                 self.setting.set_width(self.width() + 5)
                 self.setting.set_height(self.height() + 5)
             else:
                 self.setting.set_width(self.width() - 5)
                 self.setting.set_height(self.height() - 5)
-            self.on_change_setting()
-
-            # self.round_corners()
+        self.on_change_setting()
 
     def on_change_setting(self):
         # Opacity change applied in self.paintEvent
-
         self._font.setFamily(self.setting.get_font())
         self._font.setPixelSize(self.setting.get_fontsize())
+
         self.real_time.setFont(self._font)
         self.up_stream.setFont(self._font)
         self.down_stream.setFont(self._font)
         self.cpu_percent.setFont(self._font)
         self.memory_percent.setFont(self._font)
+        # 在str.format的str本身存在大括号{}时，会干扰format函数匹配。要使大括号不参与format函数匹配，应使用双重大括号进行转义
+        # 例如：print("Hello, {{}}!".format("World")) 将会输出 "Hello, {}"
+        # 类似的还有百分号%和冒号:都需要转义，也就是写成%%和::形式
+        self.setStyleSheet("QLabel{{color: rgb({}, {}, {});}};".format(*self.setting.get_font_color().getRgb()))
         # + 1 and - 1 are to ensure that the entire window is refreshed
         # If only the transparency is changed without changing the window size
         # Only text labels will be refreshed.
@@ -215,8 +221,6 @@ class MyWidget(QWidget):
     def closeEvent(self, event: PySide2.QtGui.QCloseEvent) -> None:
         if self.setting.ui.isHidden():
             event.ignore()
-        # print(event)
-        # event.ignore()
         ...
 
 

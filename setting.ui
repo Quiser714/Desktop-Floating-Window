@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>250</height>
+    <height>279</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -32,7 +32,7 @@
      <x>30</x>
      <y>20</y>
      <width>341</width>
-     <height>157</height>
+     <height>186</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -135,13 +135,27 @@
       </property>
      </widget>
     </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>字体颜色:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QPushButton" name="font_color_btn">
+      <property name="text">
+       <string>点击选择颜色</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>200</y>
+     <y>230</y>
      <width>341</width>
      <height>41</height>
     </rect>
